@@ -27,6 +27,7 @@
     Number times[] = (Number[])request.getAttribute(Constants.TIME);
     Number add[]=  (Number[])request.getAttribute(Constants.PerformedActions.ADD_ACTIONS);
     Number edit[] = (Number[])request.getAttribute(Constants.PerformedActions.EDIT_ACTIONS);
+    Number getCatalogs[] = (Number[])request.getAttribute(Constants.PerformedActions.GET_CATALOGS_ACTIONS);
     Number list[] = (Number[])request.getAttribute(Constants.PerformedActions.LIST_ACTIONS);
     Number comment[] = (Number[])request.getAttribute(Constants.PerformedActions.COMMENT_ACTIONS);
     Number form[] = (Number[])request.getAttribute(Constants.PerformedActions.GET_FORM_ACTIONS);
@@ -100,6 +101,7 @@
             <th class="col-xs-1">Summ</th>
             <th class="col-xs-1">Addobject</th>
             <th class="col-xs-1">EditObject</th>
+            <th class="col-xs-2">GetCatalogsObject</th>
             <th class="col-xs-1">GetList</th>
             <th class="col-xs-1">Comment</th>
             <th class="col-xs-1">GetForm</th>
@@ -120,6 +122,9 @@
                     </td>
                     <td class="col-xs-1">
                         <%= edit[i].intValue() %>
+                    </td>
+                    <td class="col-xs-2">
+                        <%= getCatalogs[i].intValue() %>
                     </td>
                     <td class="col-xs-1">
                         <%= list[i].intValue() %>
@@ -147,6 +152,7 @@
 var times = [];
 var add = [];
 var edit = [];
+var getCatalogs = [];
 var list = [];
 var comment = [];
 var form = [];
@@ -158,6 +164,7 @@ var summ = [];
     times.push((<%=times[i]%>));
     add.push([new Date(<%= times[i] %>), <%= add[i].intValue() %>]);
     edit.push([new Date(<%= times[i] %>), <%= edit[i].intValue() %>]);
+    getCatalogs.push([new Date(<%= times[i] %>), <%= getCatalogs[i].intValue() %>]);
     list.push([new Date(<%= times[i] %>), <%= list[i].intValue() %>]);
     comment.push([new Date(<%= times[i] %>), <%= comment[i].intValue() %>]);
     form.push([new Date(<%= times[i] %>), <%= form[i].intValue() %>]);
@@ -174,6 +181,9 @@ if(localStorage.getItem('addActions')==null){
 }
 if(localStorage.getItem('editActions')==null){
     localStorage.setItem('editActions', 'false');
+}
+if(localStorage.getItem('getCatalogsActions')==null){
+    localStorage.setItem('getCatalogsActions', 'false');
 }
 if(localStorage.getItem('listActions')==null){
     localStorage.setItem('listActions', 'true');
@@ -196,6 +206,7 @@ if(localStorage.getItem('summary')==null){
 
 var addVisible = localStorage.getItem('addActions')==='true';
 var editVisible = localStorage.getItem('editActions')==='true';
+var getCatalogsVisible = localStorage.getItem('getCatalogsActions')==='true';
 var listVisible = localStorage.getItem('listActions')==='true';
 var commentVisible = localStorage.getItem('commentActions')==='true';
 var	formVisible = localStorage.getItem('formActions')==='true';
@@ -265,22 +276,25 @@ var myChart = Highcharts.chart('actions-chart-container', {
                             localStorage.setItem('editActions', !series[1].visible);
                         }
                         if(event.target.index==2){
-                            localStorage.setItem('listActions', !series[2].visible);
+                            localStorage.setItem('getCatalogsActions', !series[2].visible);
                         }
                         if(event.target.index==3){
-                            localStorage.setItem('commentActions', !series[3].visible);
+                            localStorage.setItem('listActions', !series[3].visible);
                         }
                         if(event.target.index==4){
-                            localStorage.setItem('formActions', !series[4].visible);
+                            localStorage.setItem('commentActions', !series[4].visible);
                         }
                         if(event.target.index==5){
-                            localStorage.setItem('dtObjectActions', !series[5].visible);
+                            localStorage.setItem('formActions', !series[5].visible);
                         }
                         if(event.target.index==6){
-                            localStorage.setItem('searchActions', !series[6].visible);
+                            localStorage.setItem('dtObjectActions', !series[6].visible);
                         }
                         if(event.target.index==7){
-                            localStorage.setItem('summary', !series[7].visible);
+                            localStorage.setItem('searchActions', !series[7].visible);
+                        }
+                        if(event.target.index==8){
+                            localStorage.setItem('summary', !series[8].visible);
                         }
                     }
                 }
@@ -297,12 +311,16 @@ var myChart = Highcharts.chart('actions-chart-container', {
             visible: editVisible,
             turboThreshold: 10000
         }, {
+            name: 'GetCatalogsObject',
+            data: getCatalogs,
+            visible: getCatalogsVisible,
+            turboThreshold: 10000
+        }, {
             name: 'GetList',
             data: list,
             visible: listVisible,
             turboThreshold: 10000
-        }
-        , {
+        }, {
             name: 'Comment',
             data: comment,
             visible: commentVisible,
