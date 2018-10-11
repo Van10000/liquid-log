@@ -1,4 +1,4 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.dataset;
 
 /**
  * Created by doki on 22.10.16.
@@ -8,13 +8,14 @@ public class DataSet
     private ActionDoneParser actionsDone;
     private ErrorParser errors;
     private GCParser gc;
-    private TopData cpuData = new TopData();
+    private TopParser top;
 
     public DataSet()
     {
         actionsDone = new ActionDoneParser();
         errors = new ErrorParser();
         gc = new GCParser();
+        top = new TopParser();
     }
 
     public void parseLine(String line)
@@ -43,8 +44,8 @@ public class DataSet
         return gc;
     }
 
-    public TopData cpuData()
+    public TopParser getTop()
     {
-        return cpuData;
+        return top;
     }
 }

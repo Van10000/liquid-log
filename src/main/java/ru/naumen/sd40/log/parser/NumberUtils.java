@@ -14,4 +14,9 @@ public class NumberUtils
     {
         return Double.isNaN(value) ? 0.0d : value;
     }
+
+    public static long alignTo(long number, long align)
+    {
+        return (number / align) * align;
+    }
 }
