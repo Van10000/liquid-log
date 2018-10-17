@@ -13,6 +13,7 @@ public class TopParser
 {
     private Pattern cpuAndMemPattren = Pattern
         .compile("^ *\\d+ \\S+ +\\S+ +\\S+ +\\S+ +\\S+ +\\S+ +\\S+ \\S+ +(\\S+) +(\\S+) +\\S+ java");
+    private Pattern loadAverage = Pattern.compile(".*load average:(.*)");
 
     private DescriptiveStatistics laStat = new DescriptiveStatistics();
     private DescriptiveStatistics cpuStat = new DescriptiveStatistics();
@@ -71,7 +72,7 @@ public class TopParser
     public void parseLine(String line) throws ParseException
     {
         //get la
-        Matcher la = Pattern.compile(".*load average:(.*)").matcher(line);
+        Matcher la = loadAverage.matcher(line);
         if (la.find())
         {
             addLa(Double.parseDouble(la.group(1).split(",")[0].trim()));

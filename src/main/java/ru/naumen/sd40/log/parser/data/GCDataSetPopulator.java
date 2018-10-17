@@ -2,10 +2,10 @@ package ru.naumen.sd40.log.parser.data;
 
 import ru.naumen.sd40.log.parser.dataset.DataSet;
 
-public class GCDataParser implements DataParser
+public class GCDataSetPopulator implements DataSetPopulator
 {
     @Override
-    public void parse(String line, DataSet dataSet) {
+    public void populate(String line, DataSet dataSet) {
         dataSet.getGc().parseLine(line);
     }
 }

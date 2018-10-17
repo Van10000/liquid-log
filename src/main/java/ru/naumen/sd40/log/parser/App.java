@@ -10,10 +10,10 @@ import java.util.function.Supplier;
 import org.influxdb.dto.BatchPoints;
 
 import ru.naumen.perfhouse.influx.InfluxDAO;
-import ru.naumen.sd40.log.parser.data.GCDataParser;
-import ru.naumen.sd40.log.parser.data.DataParser;
-import ru.naumen.sd40.log.parser.data.SDNGDataParser;
-import ru.naumen.sd40.log.parser.data.TopDataParser;
+import ru.naumen.sd40.log.parser.data.GCDataSetPopulator;
+import ru.naumen.sd40.log.parser.data.DataSetPopulator;
+import ru.naumen.sd40.log.parser.data.SDNGDataSetPopulator;
+import ru.naumen.sd40.log.parser.data.TopDataSetPopulator;
 import ru.naumen.sd40.log.parser.dataset.*;
 import ru.naumen.sd40.log.parser.time.GCTimeParser;
 import ru.naumen.sd40.log.parser.time.TimeParser;
@@ -28,8 +28,9 @@ import static ru.naumen.sd40.log.parser.NumberUtils.alignTo;
 public class App
 {
     public static final long TIME_ALIGNMENT = 5 * 60 * 1000;
+    public static final int READER_BUFFER_SIZE = 32 * 1024 * 1024;
 
-    private static HashMap<String, Supplier<TimeParser>> RegisterTimeParsers(String timeZone, String log)
+    private static HashMap<String, Supplier<TimeParser>> registerTimeParsers(String timeZone, String log)
     {
         HashMap<String, Supplier<TimeParser>> timeParsers = new HashMap<>();
         timeParsers.put("sdng", () -> timeZone != null ? new SDNGTimeParser(timeZone) : new SDNGTimeParser());
@@ -38,13 +39,13 @@ public class App
         return timeParsers;
     }
 
-    private static HashMap<String, Supplier<DataParser>> RegisterDataParsers()
+    private static HashMap<String, Supplier<DataSetPopulator>> registerDataSetPopulators()
     {
-        HashMap<String, Supplier<DataParser>> dataParsers = new HashMap<>();
-        dataParsers.put("sdng", SDNGDataParser::new);
-        dataParsers.put("gc", GCDataParser::new);
-        dataParsers.put("top", TopDataParser::new);
-        return dataParsers;
+        HashMap<String, Supplier<DataSetPopulator>> dataSetPopulators = new HashMap<>();
+        dataSetPopulators.put("sdng", SDNGDataSetPopulator::new);
+        dataSetPopulators.put("gc", GCDataSetPopulator::new);
+        dataSetPopulators.put("top", TopDataSetPopulator::new);
+        return dataSetPopulators;
     }
 
     /**
@@ -87,10 +88,10 @@ public class App
 
         String mode = System.getProperty("parse.mode", "");
 
-        TimeParser timeParser = RegisterTimeParsers(args.length > 2 ? args[2] : null, log).get(mode).get();
-        DataParser dataParser = RegisterDataParsers().get(mode).get();
+        TimeParser timeParser = registerTimeParsers(args.length > 2 ? args[2] : null, log).get(mode).get();
+        DataSetPopulator dataSetPopulator = registerDataSetPopulators().get(mode).get();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(log), 32 * 1024 * 1024))
+        try (BufferedReader br = new BufferedReader(new FileReader(log), READER_BUFFER_SIZE))
         {
             String line;
             while ((line = br.readLine()) != null)
@@ -104,7 +105,7 @@ public class App
 
                 long key = alignTo(time, TIME_ALIGNMENT);
 
-                dataParser.parse(line, data.computeIfAbsent(key, k -> new DataSet()));
+                dataSetPopulator.populate(line, data.computeIfAbsent(key, k -> new DataSet()));
             }
         }
 

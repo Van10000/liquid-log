@@ -4,10 +4,10 @@ import ru.naumen.sd40.log.parser.dataset.DataSet;
 
 import java.text.ParseException;
 
-public class TopDataParser implements DataParser
+public class TopDataSetPopulator implements DataSetPopulator
 {
     @Override
-    public void parse(String line, DataSet dataSet) throws ParseException {
+    public void populate(String line, DataSet dataSet) throws ParseException {
         dataSet.getTop().parseLine(line);
     }
 }

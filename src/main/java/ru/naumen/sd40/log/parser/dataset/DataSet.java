@@ -18,17 +18,6 @@ public class DataSet
         top = new TopParser();
     }
 
-    public void parseLine(String line)
-    {
-        errors.parseLine(line);
-        actionsDone.parseLine(line);
-    }
-
-    public void parseGcLine(String line)
-    {
-        gc.parseLine(line);
-    }
-
     public ActionDoneParser getActionsDone()
     {
         return actionsDone;
