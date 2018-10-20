@@ -15,8 +15,8 @@ public class NumberUtils
         return Double.isNaN(value) ? 0.0d : value;
     }
 
-    public static long alignTo(long number, long align)
+    public static long floorToClosestMultiple(long number, long divisor)
     {
-        return (number / align) * align;
+        return (number / divisor) * divisor;
     }
 }

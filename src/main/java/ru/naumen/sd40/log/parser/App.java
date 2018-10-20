@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.influxdb.dto.BatchPoints;
@@ -20,7 +21,7 @@ import ru.naumen.sd40.log.parser.time.TimeParser;
 import ru.naumen.sd40.log.parser.time.SDNGTimeParser;
 import ru.naumen.sd40.log.parser.time.TopTimeParser;
 
-import static ru.naumen.sd40.log.parser.NumberUtils.alignTo;
+import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
 
 /**
  * Created by doki on 22.10.16.
@@ -96,16 +97,13 @@ public class App
             String line;
             while ((line = br.readLine()) != null)
             {
-                long time = timeParser.parse(line);
+                Optional<Long> time = timeParser.parse(line);
 
-                if (time == 0)
+                if (time.isPresent())
                 {
-                    continue;
+                    long key = floorToClosestMultiple(time.get(), TIME_ALIGNMENT);
+                    dataSetPopulator.populate(line, data.computeIfAbsent(key, k -> new DataSet()));
                 }
-
-                long key = alignTo(time, TIME_ALIGNMENT);
-
-                dataSetPopulator.populate(line, data.computeIfAbsent(key, k -> new DataSet()));
             }
         }
 

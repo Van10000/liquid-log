@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,14 +28,14 @@ public class GCTimeParser implements TimeParser
     }
 
     @Override
-    public long parse(String line) throws ParseException
+    public Optional<Long> parse(String line) throws ParseException
     {
         Matcher matcher = PATTERN.matcher(line);
         if (matcher.find())
         {
             Date parse = DATE_FORMAT.parse(matcher.group(1));
-            return parse.getTime();
+            return Optional.of(parse.getTime());
         }
-        return 0L;
+        return Optional.empty();
     }
 }

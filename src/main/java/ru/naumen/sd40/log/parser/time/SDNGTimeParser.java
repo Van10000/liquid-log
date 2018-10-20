@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +27,7 @@ public class SDNGTimeParser implements TimeParser
     }
 
     @Override
-    public long parse(String line) throws ParseException
+    public Optional<Long> parse(String line) throws ParseException
     {
         Matcher matcher = TIME_PATTERN.matcher(line);
 
@@ -34,8 +35,8 @@ public class SDNGTimeParser implements TimeParser
         {
             String timeString = matcher.group(1);
             Date recDate = DATE_FORMAT.parse(timeString);
-            return recDate.getTime();
+            return Optional.of(recDate.getTime());
         }
-        return 0L;
+        return Optional.empty();
     }
 }

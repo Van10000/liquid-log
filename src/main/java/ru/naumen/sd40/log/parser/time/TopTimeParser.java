@@ -2,12 +2,13 @@ package ru.naumen.sd40.log.parser.time;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static ru.naumen.sd40.log.parser.App.TIME_ALIGNMENT;
-import static ru.naumen.sd40.log.parser.NumberUtils.alignTo;
+import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
 
 public class TopTimeParser implements TimeParser
 {
@@ -28,13 +29,13 @@ public class TopTimeParser implements TimeParser
 
 
     @Override
-    public long parse(String line) throws ParseException
+    public Optional<Long> parse(String line) throws ParseException
     {
         Matcher matcher = timeRegex.matcher(line);
         if (matcher.find()) {
-            lastParsedTime = alignTo(sdf.parse(dataDate + matcher.group(1)).getTime(), TIME_ALIGNMENT);
-            return 0;
+            lastParsedTime = floorToClosestMultiple(sdf.parse(dataDate + matcher.group(1)).getTime(), TIME_ALIGNMENT);
+            return Optional.empty();
         }
-        return lastParsedTime;
+        return Optional.of(lastParsedTime);
     }
 }
