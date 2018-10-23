@@ -57,6 +57,7 @@ public class LogParser
         if (args.length <= 1)
         {
             System.out.println("Not enough arguments for database initialization");
+            System.exit(0);
         }
         String dbName = args[1].replaceAll("-", "_");
         DataStorage storage = new DataStorage(new InfluxConnector(
