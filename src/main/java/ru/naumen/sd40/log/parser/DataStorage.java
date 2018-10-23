@@ -3,13 +3,13 @@ package ru.naumen.sd40.log.parser;
 import ru.naumen.DBConnector;
 import ru.naumen.sd40.log.parser.dataset.DataSet;
 
-public class DataSetUploader
+public class DataStorage
 {
     private DataSet dataSet = null;
     private DBConnector dbConnector;
     private long currentKey = -1;
 
-    public DataSetUploader(DBConnector dbConnector)
+    public DataStorage(DBConnector dbConnector)
     {
         this.dbConnector = dbConnector;
     }

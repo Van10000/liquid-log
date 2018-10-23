@@ -7,7 +7,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.naumen.sd40.log.parser.LogUploader.TIME_ALIGNMENT;
+import static ru.naumen.sd40.log.parser.LogParser.TIME_ALIGNMENT;
 import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
 
 public class TopTimeParser implements TimeParser

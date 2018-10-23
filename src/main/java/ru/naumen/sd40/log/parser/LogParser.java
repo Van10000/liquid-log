@@ -23,7 +23,7 @@ import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
 /**
  * Created by doki on 22.10.16.
  */
-public class LogUploader
+public class LogParser
 {
     public static final long TIME_ALIGNMENT = 5 * 60 * 1000;
     public static final int READER_BUFFER_SIZE = 32 * 1024 * 1024;
@@ -59,7 +59,7 @@ public class LogUploader
             System.out.println("Not enough arguments for database initialization");
         }
         String dbName = args[1].replaceAll("-", "_");
-        DataSetUploader uploader = new DataSetUploader(new InfluxConnector(
+        DataStorage storage = new DataStorage(new InfluxConnector(
                 dbName,
                 System.getProperty("influx.host"),
                 System.getProperty("influx.user"),
@@ -81,12 +81,12 @@ public class LogUploader
                 if (time.isPresent())
                 {
                     long key = floorToClosestMultiple(time.get(), TIME_ALIGNMENT);
-                    dataSetPopulator.populate(line, uploader.get(key));
+                    dataSetPopulator.populate(line, storage.get(key));
                 }
             }
-        } catch (DataSetUploader.AlreadyProcessedKeyException e) {
+        } catch (DataStorage.AlreadyProcessedKeyException e) {
             System.out.println("Log file has incorrect format: log lines are not ordered by time.");
         }
-        uploader.close();
+        storage.close();
     }
 }
