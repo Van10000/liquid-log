@@ -1,6 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -8,7 +9,6 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import ru.naumen.perfhouse.influx.InfluxConnector;
 import ru.naumen.sd40.log.parser.data.GCDataSetPopulator;
 import ru.naumen.sd40.log.parser.data.DataSetPopulator;
 import ru.naumen.sd40.log.parser.data.SDNGDataSetPopulator;
@@ -31,8 +31,9 @@ public class LogParser
     private static HashMap<String, Supplier<TimeParser>> registerTimeParsers(String timeZone, String log)
     {
         HashMap<String, Supplier<TimeParser>> timeParsers = new HashMap<>();
-        timeParsers.put("sdng", () -> timeZone != null ? new SDNGTimeParser(timeZone) : new SDNGTimeParser());
-        timeParsers.put("gc", () -> timeZone != null ? new GCTimeParser(timeZone) : new GCTimeParser());
+        boolean noTimezone = timeZone == null || timeZone.length() == 0;
+        timeParsers.put("sdng", () -> noTimezone ? new SDNGTimeParser() : new SDNGTimeParser(timeZone));
+        timeParsers.put("gc", () -> noTimezone ? new GCTimeParser() : new GCTimeParser(timeZone));
         timeParsers.put("top", () -> new TopTimeParser(log));
         return timeParsers;
     }
@@ -46,33 +47,13 @@ public class LogParser
         return dataSetPopulators;
     }
 
-    /**
-     * 
-     * @param args [0] - sdng.log, [1] - gc.log, [2] - top, [3] - dbName, [4] timezone
-     * @throws IOException
-     * @throws ParseException
-     */
-    public static void main(String[] args) throws IOException, ParseException
+    public static void parseAndUpload(String logPath, String timezone, String mode, DataStorage storage)
+            throws IOException, ParseException, LogFormatException
     {
-        if (args.length <= 1)
-        {
-            System.out.println("Not enough arguments for database initialization");
-            System.exit(0);
-        }
-        String dbName = args[1].replaceAll("-", "_");
-        DataStorage storage = new DataStorage(new InfluxConnector(
-                dbName,
-                System.getProperty("influx.host"),
-                System.getProperty("influx.user"),
-                System.getProperty("influx.password")));
-
-        String log = args[0];
-        String mode = System.getProperty("parse.mode", "");
-
-        TimeParser timeParser = registerTimeParsers(args.length > 2 ? args[2] : null, log).get(mode).get();
+        TimeParser timeParser = registerTimeParsers(timezone, logPath).get(mode).get();
         DataSetPopulator dataSetPopulator = registerDataSetPopulators().get(mode).get();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(log), READER_BUFFER_SIZE))
+        try (BufferedReader br = new BufferedReader(new FileReader(logPath), READER_BUFFER_SIZE))
         {
             String line;
             while ((line = br.readLine()) != null)
@@ -86,7 +67,7 @@ public class LogParser
                 }
             }
         } catch (DataStorage.AlreadyProcessedKeyException e) {
-            System.out.println("Log file has incorrect format: log lines are not ordered by time.");
+            throw new LogFormatException("Log file has incorrect format: log lines are not ordered by time.");
         }
         storage.close();
     }

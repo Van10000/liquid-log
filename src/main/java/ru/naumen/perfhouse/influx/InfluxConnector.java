@@ -7,13 +7,15 @@ public class InfluxConnector implements DBConnector
 {
     private InfluxDAO storage;
     private String dbName;
+    private boolean traceResult;
 
-    public InfluxConnector(String dbName, String host, String user, String password)
+    public InfluxConnector(String dbName, String host, String user, String password, boolean traceResult)
     {
         storage = new InfluxDAO(host, user, password);
         storage.init();
         storage.connectToDB(dbName);
         this.dbName = dbName;
+        this.traceResult = traceResult;
     }
 
     @Override
@@ -22,7 +24,7 @@ public class InfluxConnector implements DBConnector
         ActionDoneParser dones = dataSet.getActionsDone();
         dones.calculate();
         ErrorParser errors = dataSet.getErrors();
-        if (System.getProperty("NoCsv") == null)
+        if (traceResult)
         {
             System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", key, dones.getCount(),
                     dones.getMin(), dones.getMean(), dones.getStddev(), dones.getPercent50(), dones.getPercent95(),
