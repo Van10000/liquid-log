@@ -1,7 +1,7 @@
 package ru.naumen.sd40.log.parser;
 
 import ru.naumen.DBConnector;
-import ru.naumen.sd40.log.parser.dataset.DataSet;
+import ru.naumen.sd40.log.parser.dataParser.DataSet;
 
 public class DataStorage
 {

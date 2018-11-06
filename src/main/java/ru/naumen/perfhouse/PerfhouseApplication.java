@@ -8,9 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import ru.naumen.sd40.log.parser.LogParser;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableLoadTimeWeaving;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
 
 @SpringBootApplication(scanBasePackages = { "ru.naumen" })
+@EnableSpringConfigured
+@EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
 public class PerfhouseApplication extends SpringBootServletInitializer
 {
     @Override
@@ -18,6 +23,10 @@ public class PerfhouseApplication extends SpringBootServletInitializer
         return application.sources(PerfhouseApplication.class);
     }
 
+    @Bean // without it doesn't resolve InstrumentationLoadTimeWeaver and falls during startup
+    public InstrumentationLoadTimeWeaver loadTimeWeaver() {
+        return new InstrumentationLoadTimeWeaver();
+    }
 
     public static void main(String[] args) throws IOException, ParseException
     {

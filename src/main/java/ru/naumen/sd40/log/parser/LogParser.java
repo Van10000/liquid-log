@@ -1,7 +1,6 @@
 package ru.naumen.sd40.log.parser;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -9,20 +8,23 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import ru.naumen.sd40.log.parser.data.GCDataSetPopulator;
-import ru.naumen.sd40.log.parser.data.DataSetPopulator;
-import ru.naumen.sd40.log.parser.data.SDNGDataSetPopulator;
-import ru.naumen.sd40.log.parser.data.TopDataSetPopulator;
-import ru.naumen.sd40.log.parser.time.GCTimeParser;
-import ru.naumen.sd40.log.parser.time.TimeParser;
-import ru.naumen.sd40.log.parser.time.SDNGTimeParser;
-import ru.naumen.sd40.log.parser.time.TopTimeParser;
+import org.springframework.stereotype.Component;
+import ru.naumen.sd40.log.parser.populator.GCDataSetPopulator;
+import ru.naumen.sd40.log.parser.populator.DataSetPopulator;
+import ru.naumen.sd40.log.parser.populator.SDNGDataSetPopulator;
+import ru.naumen.sd40.log.parser.populator.TopDataSetPopulator;
+import ru.naumen.sd40.log.parser.timeParser.GCTimeParser;
+import ru.naumen.sd40.log.parser.timeParser.TimeParser;
+import ru.naumen.sd40.log.parser.timeParser.SDNGTimeParser;
+import ru.naumen.sd40.log.parser.timeParser.TopTimeParser;
 
 import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
 
 /**
  * Created by doki on 22.10.16.
  */
+
+@Component
 public class LogParser
 {
     public static final long TIME_ALIGNMENT = 5 * 60 * 1000;
@@ -47,7 +49,7 @@ public class LogParser
         return dataSetPopulators;
     }
 
-    public static void parseAndUpload(String logPath, String timezone, String mode, DataStorage storage)
+    public void parseAndUpload(String logPath, String timezone, String mode, DataStorage storage)
             throws IOException, ParseException, LogFormatException
     {
         TimeParser timeParser = registerTimeParsers(timezone, logPath).get(mode).get();
@@ -67,7 +69,7 @@ public class LogParser
                 }
             }
         } catch (DataStorage.AlreadyProcessedKeyException e) {
-            throw new LogFormatException("Log file has incorrect format: log lines are not ordered by time.");
+            throw new LogFormatException("Log file has incorrect format: log lines are not ordered by timeParser.");
         }
         storage.close();
     }

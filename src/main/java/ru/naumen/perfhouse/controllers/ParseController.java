@@ -1,5 +1,7 @@
 package ru.naumen.perfhouse.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,13 @@ import ru.naumen.sd40.log.parser.LogParser;
 @Controller
 public class ParseController
 {
+    private final LogParser parser;
+
+    @Autowired
+    public ParseController(LogParser parser) {
+        this.parser = parser;
+    }
+
     @RequestMapping(path = "/parse", method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.OK)
     public void parse(@RequestParam("DBName") String dbName,
@@ -17,15 +26,13 @@ public class ParseController
                       @RequestParam("ParseMode") String parseMode,
                       @RequestParam(name="Timezone", required=false) String timezone,
                       @RequestParam(name="TraceResult", required=false) String traceResult)
+
     {
         DataStorage storage = new DataStorage(new InfluxConnector(
                 dbName,
-                System.getProperty("influx.host"),
-                System.getProperty("influx.user"),
-                System.getProperty("influx.password"),
                 traceResult.equals("true")));
         try {
-            LogParser.parseAndUpload(logPath, timezone, parseMode, storage);
+            parser.parseAndUpload(logPath, timezone, parseMode, storage);
         } catch (Exception e) {
             e.printStackTrace();
         }
