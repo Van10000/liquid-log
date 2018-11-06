@@ -46,6 +46,27 @@
   		<h3><strong>Attention!</strong><br>All requests for stored data are made with UTC time.<br>Requested data will be displayed in your browsers timezone.</h3>
 	</div>
 	<br>
+    <form action="/parse" method="post" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>Database name:</td>
+                <td><input type="text" class="form-control" name="DBName" required></td>
+            </tr>
+            <tr>
+                <td>Log file path:</td>
+                <td><input type="text" class="form-control" name="LogPath" required></td>
+            </tr>
+            <tr>
+                <td>Timezone:</td>
+                <td><input type="text" class="form-control" name="Timezone" placeholder="Asia/Yekaterinburg"></td>
+            </tr>
+        </table>
+        <input type="radio" class="form-check-input" name="ParseMode" value="sdng" checked>Sdng<br>
+        <input type="radio" class="form-check-input" name="ParseMode" value="top">Top<br>
+        <input type="radio" class="form-check-input" name="ParseMode" value="gc">Gc<br>
+        <input type="checkbox" class="form-check-input" value="true" name="TraceResult" checked>Trace result<br>
+        <button type="submit" class="btn btn-success">Start parsing</button>
+    </form>
     <h1>Client list</h1>
     <table class="table table-striped table-fixed"> <!-- table-bordered  -->
         <thead class="thead-inverse">
@@ -56,7 +77,7 @@
          <% for(String client:(List<String>)request.getAttribute("clients")) { %>
             <tr>
                 <td class="col-xs-6">
-                    <h4><span><%= client %></span></h2>
+                    <h4><span><%= client %></span></h4>
                 </td>
                 <td class="col-xs-6">
                 	<a class="btn btn-outline-primary" href='<%= ((Map)request.getAttribute("prevMonthLinks")).get(client) %>'>Previous Month</a>
@@ -84,7 +105,7 @@
 				        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="formFrom">From</label>
-                                <input type="text"class="form-control" id="formFrom" name="from">
+                                <input type="text" class="form-control" id="formFrom" name="from">
                             </div>
                         </div>
                         <div class="col-md-6">
