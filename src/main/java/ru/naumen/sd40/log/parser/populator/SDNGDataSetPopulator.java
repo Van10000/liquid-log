@@ -1,19 +1,14 @@
 package ru.naumen.sd40.log.parser.populator;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
+import ru.naumen.ApplicationContextProvider.ApplicationContextProvider;
 import ru.naumen.sd40.log.parser.dataParser.ActionDoneParser;
 import ru.naumen.sd40.log.parser.dataParser.DataSet;
 import ru.naumen.sd40.log.parser.dataParser.ErrorParser;
 
-@Configurable
 public class SDNGDataSetPopulator implements DataSetPopulator
 {
-    @Autowired
-    private ActionDoneParser actionDoneParser;
-
-    @Autowired
-    private ErrorParser errorParser;
+    private ActionDoneParser actionDoneParser = ApplicationContextProvider.getContext().getBean(ActionDoneParser.class);
+    private ErrorParser errorParser = ApplicationContextProvider.getContext().getBean(ErrorParser.class);
 
     @Override
     public void populate(String line, DataSet dataSet)

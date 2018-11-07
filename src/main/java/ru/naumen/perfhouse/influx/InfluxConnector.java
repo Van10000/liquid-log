@@ -1,7 +1,6 @@
 package ru.naumen.perfhouse.influx;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
+import ru.naumen.ApplicationContextProvider.ApplicationContextProvider;
 import ru.naumen.DBConnector;
 import ru.naumen.sd40.log.parser.data.ActionDoneData;
 import ru.naumen.sd40.log.parser.data.ErrorData;
@@ -9,11 +8,9 @@ import ru.naumen.sd40.log.parser.data.GCData;
 import ru.naumen.sd40.log.parser.data.TopData;
 import ru.naumen.sd40.log.parser.dataParser.*;
 
-@Configurable
 public class InfluxConnector implements DBConnector
 {
-    @Autowired
-    private InfluxDAO storage;
+    private InfluxDAO storage = ApplicationContextProvider.getContext().getBean(InfluxDAO.class);
     private String dbName;
     private boolean traceResult;
 
