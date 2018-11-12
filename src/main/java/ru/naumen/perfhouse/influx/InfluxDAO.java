@@ -46,10 +46,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import ru.naumen.perfhouse.statdata.Constants;
-import ru.naumen.sd40.log.parser.dataset.ActionDoneParser;
-import ru.naumen.sd40.log.parser.dataset.ErrorParser;
-import ru.naumen.sd40.log.parser.dataset.GCParser;
-import ru.naumen.sd40.log.parser.dataset.TopParser;
+import ru.naumen.sd40.log.parser.data.ActionDoneData;
+import ru.naumen.sd40.log.parser.data.ErrorData;
+import ru.naumen.sd40.log.parser.data.GCData;
+import ru.naumen.sd40.log.parser.data.TopData;
 
 /**
  * Created by doki on 24.10.16.
@@ -114,8 +114,8 @@ public class InfluxDAO
         return BatchPoints.database(dbName).build();
     }
 
-    public void storeActionsFromLog(BatchPoints batch, String dbName, long date, ActionDoneParser dones,
-            ErrorParser errors)
+    public void storeActionsFromLog(BatchPoints batch, String dbName, long date, ActionDoneData dones,
+            ErrorData errors)
     {
         //@formatter:off
         Builder builder = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
@@ -156,7 +156,7 @@ public class InfluxDAO
     public void storeFromJSon(BatchPoints batch, String dbName, JSONObject data)
     {
         influx.createDatabase(dbName);
-        long timestamp = (data.getLong("time"));
+        long timestamp = (data.getLong("timeParser"));
         long errors = (data.getLong("errors"));
         double p99 = (data.getDouble("tnn"));
         double p999 = (data.getDouble("tnnn"));
@@ -183,7 +183,7 @@ public class InfluxDAO
         }
     }
 
-    public void storeGc(BatchPoints batch, String dbName, long date, GCParser gc)
+    public void storeGc(BatchPoints batch, String dbName, long date, GCData gc)
     {
         Point point = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
                 .addField(GCTIMES, gc.getGcTimes()).addField(AVARAGE_GC_TIME, gc.getCalculatedAvg())
@@ -199,12 +199,12 @@ public class InfluxDAO
         }
     }
 
-    public void storeTop(BatchPoints batch, String dbName, long date, TopParser parser)
+    public void storeTop(BatchPoints batch, String dbName, long date, TopData data)
     {
         Point point = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
-                .addField(AVG_LA, parser.getAvgLa()).addField(AVG_CPU, parser.getAvgCpuUsage())
-                .addField(AVG_MEM, parser.getAvgMemUsage()).addField(MAX_LA, parser.getMaxLa())
-                .addField(MAX_CPU, parser.getMaxCpu()).addField(MAX_MEM, parser.getMaxMem()).build();
+                .addField(AVG_LA, data.getAvgLa()).addField(AVG_CPU, data.getAvgCpuUsage())
+                .addField(AVG_MEM, data.getAvgMemUsage()).addField(MAX_LA, data.getMaxLa())
+                .addField(MAX_CPU, data.getMaxCpu()).addField(MAX_MEM, data.getMaxMem()).build();
         if (batch != null)
         {
             batch.getPoints().add(point);

@@ -1,17 +1,21 @@
 package ru.naumen.perfhouse.influx;
 
+import ru.naumen.ApplicationContextProvider.ApplicationContextProvider;
 import ru.naumen.DBConnector;
-import ru.naumen.sd40.log.parser.dataset.*;
+import ru.naumen.sd40.log.parser.data.ActionDoneData;
+import ru.naumen.sd40.log.parser.data.ErrorData;
+import ru.naumen.sd40.log.parser.data.GCData;
+import ru.naumen.sd40.log.parser.data.TopData;
+import ru.naumen.sd40.log.parser.dataParser.*;
 
 public class InfluxConnector implements DBConnector
 {
-    private InfluxDAO storage;
+    private InfluxDAO storage = ApplicationContextProvider.getContext().getBean(InfluxDAO.class);
     private String dbName;
     private boolean traceResult;
 
-    public InfluxConnector(String dbName, String host, String user, String password, boolean traceResult)
+    public InfluxConnector(String dbName, boolean traceResult)
     {
-        storage = new InfluxDAO(host, user, password);
         storage.init();
         storage.connectToDB(dbName);
         this.dbName = dbName;
@@ -21,9 +25,9 @@ public class InfluxConnector implements DBConnector
     @Override
     public void store(long key, DataSet dataSet)
     {
-        ActionDoneParser dones = dataSet.getActionsDone();
+        ActionDoneData dones = dataSet.getActionsDone();
         dones.calculate();
-        ErrorParser errors = dataSet.getErrors();
+        ErrorData errors = dataSet.getErrors();
         if (traceResult)
         {
             System.out.print(String.format("%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%d\n", key, dones.getCount(),
@@ -35,16 +39,16 @@ public class InfluxConnector implements DBConnector
             storage.storeActionsFromLog(null, dbName, key, dones, errors);
         }
 
-        GCParser gc = dataSet.getGc();
+        GCData gc = dataSet.getGc();
         if (!gc.isNan())
         {
             storage.storeGc(null, dbName, key, gc);
         }
 
-        TopParser topParser = dataSet.getTop();
-        if (!topParser.isNan())
+        TopData topData = dataSet.getTop();
+        if (!topData.isNan())
         {
-            storage.storeTop(null, dbName, key, topParser);
+            storage.storeTop(null, dbName, key, topData);
         }
     }
 }

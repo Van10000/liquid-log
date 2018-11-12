@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Data structure, representing data acquired from influx
+ * Data structure, representing populator acquired from influx
  */
 public class StatData
 {
@@ -47,7 +47,7 @@ public class StatData
     @Override
     public String toString()
     {
-        return "Stat data properties: " + getDataProperties();
+        return "Stat populator properties: " + getDataProperties();
     }
 
 }

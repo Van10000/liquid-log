@@ -1,6 +1,6 @@
-package ru.naumen.sd40.log.parser.data;
+package ru.naumen.sd40.log.parser.populator;
 
-import ru.naumen.sd40.log.parser.dataset.DataSet;
+import ru.naumen.sd40.log.parser.dataParser.DataSet;
 
 import java.text.ParseException;
 
