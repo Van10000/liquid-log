@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.naumen.ApplicationContextProvider.ApplicationContextProvider;
 import ru.naumen.sd40.log.parser.populator.DataSetPopulator;
 import ru.naumen.sd40.log.parser.timeParser.GCTimeParser;
 import ru.naumen.sd40.log.parser.timeParser.TimeParser;
@@ -28,7 +28,13 @@ public class LogParser
 {
     public static final long TIME_ALIGNMENT = 5 * 60 * 1000;
     public static final int READER_BUFFER_SIZE = 32 * 1024 * 1024;
-    private static final ApplicationContext appContext = ApplicationContextProvider.getContext();
+
+    private final BeanFactory beanFactory;
+
+    @Autowired
+    public LogParser(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
 
     private static HashMap<String, Supplier<TimeParser>> registerTimeParsers(String timeZone, String log)
     {
@@ -44,7 +50,7 @@ public class LogParser
             throws IOException, ParseException, LogFormatException
     {
         TimeParser timeParser = registerTimeParsers(timezone, logPath).get(mode).get();
-        DataSetPopulator populator = appContext.getBean(mode + "Populator", DataSetPopulator.class);
+        DataSetPopulator populator = beanFactory.getBean(mode + "Populator", DataSetPopulator.class);
 
         try (BufferedReader br = new BufferedReader(new FileReader(logPath), READER_BUFFER_SIZE))
         {
