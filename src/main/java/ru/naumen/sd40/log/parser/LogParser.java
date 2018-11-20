@@ -11,6 +11,8 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.naumen.sd40.log.parser.dataSet.DataSet;
+import ru.naumen.sd40.log.parser.exceptions.AlreadyProcessedKeyException;
 import ru.naumen.sd40.log.parser.populator.DataSetPopulator;
 import ru.naumen.sd40.log.parser.timeParser.GCTimeParser;
 import ru.naumen.sd40.log.parser.timeParser.TimeParser;
@@ -24,7 +26,7 @@ import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
  */
 
 @Component
-public class LogParser
+public class LogParser<TDataSet extends DataSet>
 {
     public static final long TIME_ALIGNMENT = 5 * 60 * 1000;
     public static final int READER_BUFFER_SIZE = 32 * 1024 * 1024;
@@ -46,11 +48,12 @@ public class LogParser
         return timeParsers;
     }
 
-    public void parseAndUpload(String logPath, String timezone, String mode, DataStorage storage)
+    public void parseAndUpload(String logPath, String timezone, String mode, DataStorage<TDataSet> storage)
             throws IOException, ParseException, LogFormatException
     {
         TimeParser timeParser = registerTimeParsers(timezone, logPath).get(mode).get();
-        DataSetPopulator populator = beanFactory.getBean(mode + "Populator", DataSetPopulator.class);
+        DataSetPopulator<TDataSet> populator = (DataSetPopulator<TDataSet>)
+                beanFactory.getBean(mode + "Populator");
 
         try (BufferedReader br = new BufferedReader(new FileReader(logPath), READER_BUFFER_SIZE))
         {
@@ -65,7 +68,7 @@ public class LogParser
                     populator.populate(line, storage.get(key));
                 }
             }
-        } catch (DataStorage.AlreadyProcessedKeyException e) {
+        } catch (AlreadyProcessedKeyException e) {
             throw new LogFormatException("Log file has incorrect format: log lines are not ordered by timeParser.");
         }
         storage.close();

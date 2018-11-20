@@ -4,46 +4,49 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import ru.naumen.DBConnector;
-import ru.naumen.sd40.log.parser.dataParser.DataSet;
+import ru.naumen.sd40.log.parser.dataSet.SDNGDataSet;
+import ru.naumen.sd40.log.parser.dataSetFactory.SDNGDataSetFactory;
+import ru.naumen.sd40.log.parser.exceptions.AlreadyProcessedKeyException;
 
 import static org.mockito.Mockito.*;
 
 public class DataStorageTest
 {
-    private DBConnector dbConnector;
-    private DataStorage storage;
+    private DBConnector<SDNGDataSet> dbConnector;
+    private DataStorage<SDNGDataSet> storage;
 
     @Before
     public void setUp()
     {
-        dbConnector = Mockito.mock(DBConnector.class);
-        storage = new DataStorage(dbConnector);
+        dbConnector = (DBConnector<SDNGDataSet>) Mockito.mock(DBConnector.class);
+        storage = new DataStorage<>(dbConnector, new SDNGDataSetFactory());
     }
 
     @Test
-    public void mustUploadWhenKeyIncreased() throws DataStorage.AlreadyProcessedKeyException
+    public void mustUploadWhenKeyIncreased() throws AlreadyProcessedKeyException
     {
         //when
         storage.get(0);
         storage.get(1);
 
         //then
-        verify(dbConnector).store(eq(0L), any(DataSet.class));
+        verify(dbConnector).store(eq(0L), any(SDNGDataSet.class));
     }
 
     @Test
-    public void mustUploadWhenClosed() throws DataStorage.AlreadyProcessedKeyException
+    public void mustUploadWhenClosed() throws AlreadyProcessedKeyException
     {
         //when
         storage.get(0);
         storage.close();
 
         //then
-        verify(dbConnector).store(eq(0L), any(DataSet.class));
+        verify(dbConnector).store(eq(0L), any(SDNGDataSet.class));
     }
 
-    @Test(expected = DataStorage.AlreadyProcessedKeyException.class)
-    public void mustThrowIfIncorrectOrder() throws DataStorage.AlreadyProcessedKeyException {
+    @Test(expected = AlreadyProcessedKeyException.class)
+    public void mustThrowIfIncorrectOrder() throws AlreadyProcessedKeyException
+    {
         //when
         storage.get(1);
         storage.get(0);

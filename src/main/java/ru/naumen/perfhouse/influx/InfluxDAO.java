@@ -114,10 +114,8 @@ public class InfluxDAO
         return BatchPoints.database(dbName).build();
     }
 
-    public void storeActionsFromLog(BatchPoints batch, String dbName, long date, ActionDoneData dones,
-            ErrorData errors)
+    public void storeActionsFromLog(String dbName, long date, ActionDoneData dones, ErrorData errors)
     {
-        //@formatter:off
         Builder builder = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
                 .addField(COUNT, dones.getCount())
                 .addField("min", dones.getMin())
@@ -138,22 +136,11 @@ public class InfluxDAO
                 .addField(SEARCH_ACTIONS, dones.getSearchActions())
                 .addField(GET_CATALOGS_ACTIONS, dones.getCatalogsActions());
 
-
-        //@formatter:on
-
         Point point = builder.build();
-
-        if (batch != null)
-        {
-            batch.getPoints().add(point);
-        }
-        else
-        {
-            influx.write(dbName, "autogen", point);
-        }
+        influx.write(dbName, "autogen", point);
     }
 
-    public void storeFromJSon(BatchPoints batch, String dbName, JSONObject data)
+    public void storeFromJSon(String dbName, JSONObject data)
     {
         influx.createDatabase(dbName);
         long timestamp = (data.getLong("timeParser"));
@@ -172,51 +159,23 @@ public class InfluxDAO
                 .addField("min", 0).addField("mean", mean).addField("stddev", stddev).addField("percent50", p50)
                 .addField("percent95", p95).addField("percent99", p99).addField("percent999", p999).addField("max", max)
                 .addField("errors", errors).addField("herrors", herrors).build();
-
-        if (batch != null)
-        {
-            batch.getPoints().add(measure);
-        }
-        else
-        {
-            influx.write(dbName, "autogen", measure);
-        }
+        influx.write(dbName, "autogen", measure);
     }
 
-    public void storeGc(BatchPoints batch, String dbName, long date, GCData gc)
+    public void storeGc(String dbName, long date, GCData gc)
     {
         Point point = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
                 .addField(GCTIMES, gc.getGcTimes()).addField(AVARAGE_GC_TIME, gc.getCalculatedAvg())
                 .addField(MAX_GC_TIME, gc.getMaxGcTime()).build();
-
-        if (batch != null)
-        {
-            batch.getPoints().add(point);
-        }
-        else
-        {
-            influx.write(dbName, "autogen", point);
-        }
+        influx.write(dbName, "autogen", point);
     }
 
-    public void storeTop(BatchPoints batch, String dbName, long date, TopData data)
+    public void storeTop(String dbName, long date, TopData data)
     {
         Point point = Point.measurement(Constants.MEASUREMENT_NAME).time(date, TimeUnit.MILLISECONDS)
                 .addField(AVG_LA, data.getAvgLa()).addField(AVG_CPU, data.getAvgCpuUsage())
                 .addField(AVG_MEM, data.getAvgMemUsage()).addField(MAX_LA, data.getMaxLa())
                 .addField(MAX_CPU, data.getMaxCpu()).addField(MAX_MEM, data.getMaxMem()).build();
-        if (batch != null)
-        {
-            batch.getPoints().add(point);
-        }
-        else
-        {
-            influx.write(dbName, "autogen", point);
-        }
-    }
-
-    public void writeBatch(BatchPoints batch)
-    {
-        influx.write(batch);
+        influx.write(dbName, "autogen", point);
     }
 }

@@ -1,20 +1,35 @@
 package ru.naumen.sd40.log.parser;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 import ru.naumen.DBConnector;
-import ru.naumen.sd40.log.parser.dataParser.DataSet;
+import ru.naumen.sd40.log.parser.dataSet.DataSet;
+import ru.naumen.sd40.log.parser.dataSetFactory.DataSetFactory;
+import ru.naumen.sd40.log.parser.exceptions.AlreadyProcessedKeyException;
 
-public class DataStorage
+@Component
+public class DataStorage<TDataSet extends DataSet>
 {
-    private DataSet dataSet = null;
-    private DBConnector dbConnector;
+    private TDataSet dataSet = null;
+    private DBConnector<TDataSet> dbConnector;
+    private DataSetFactory<TDataSet> factory;
     private long currentKey = -1;
 
-    public DataStorage(DBConnector dbConnector)
+    @Autowired
+    @Lazy
+    public DataStorage(DBConnector<TDataSet> dbConnector, DataSetFactory<TDataSet> factory)
     {
         this.dbConnector = dbConnector;
+        this.factory = factory;
     }
 
-    public DataSet get(long key) throws AlreadyProcessedKeyException
+    public void initConnector(String dbName, boolean traceResult)
+    {
+        dbConnector.init(dbName, traceResult);
+    }
+
+    public TDataSet get(long key) throws AlreadyProcessedKeyException
     {
         if (key == currentKey)
         {
@@ -27,7 +42,7 @@ public class DataStorage
                 uploadDataSet();
             }
             currentKey = key;
-            dataSet = new DataSet();
+            dataSet = factory.create();
             return dataSet;
         }
         throw new AlreadyProcessedKeyException();
@@ -42,6 +57,6 @@ public class DataStorage
     {
         dbConnector.store(currentKey, dataSet);
     }
-
-    public class AlreadyProcessedKeyException extends Exception { }
 }
+
+
