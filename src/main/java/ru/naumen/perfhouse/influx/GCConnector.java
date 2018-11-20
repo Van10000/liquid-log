@@ -20,7 +20,7 @@ public class GCConnector extends BaseConnector<GCDataSet>
         GCData gc = dataSet.getGc();
         if (traceResult)
         {
-            System.out.print(String.format("%f;%d;%f", gc.getCalculatedAvg(), gc.getGcTimes(), gc.getMaxGcTime()));
+            System.out.print(String.format("%f;%d;%f\n", gc.getCalculatedAvg(), gc.getGcTimes(), gc.getMaxGcTime()));
         }
         if (!gc.isNan())
         {

@@ -6,6 +6,11 @@ public class GCDataSet implements DataSet
 {
     private GCData gc;
 
+    public GCDataSet()
+    {
+        gc = new GCData();
+    }
+
     public GCData getGc()
     {
         return gc;

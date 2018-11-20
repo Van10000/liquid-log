@@ -6,6 +6,11 @@ public class TopDataSet implements DataSet
 {
     private TopData top;
 
+    public TopDataSet()
+    {
+        top = new TopData();
+    }
+
     public TopData getTop()
     {
         return top;

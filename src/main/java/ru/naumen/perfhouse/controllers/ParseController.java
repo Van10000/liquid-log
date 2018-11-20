@@ -2,12 +2,11 @@ package ru.naumen.perfhouse.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.naumen.sd40.ParseRunner;
+import ru.naumen.sd40.log.parseRunner.ParseRunner;
 import ru.naumen.sd40.log.parser.LogFormatException;
 import ru.naumen.sd40.log.parser.dataSet.GCDataSet;
 import ru.naumen.sd40.log.parser.dataSet.SDNGDataSet;

@@ -20,7 +20,7 @@ public class TopConnector extends BaseConnector<TopDataSet>
         TopData topData = dataSet.getTop();
         if (traceResult)
         {
-            System.out.print(String.format("%f;%f;%f;%f;%f;%f",
+            System.out.print(String.format("%f;%f;%f;%f;%f;%f\n",
                     topData.getAvgCpuUsage(), topData.getAvgLa(), topData.getAvgMemUsage(),
                     topData.getMaxCpu(), topData.getMaxLa(), topData.getMaxMem()));
         }

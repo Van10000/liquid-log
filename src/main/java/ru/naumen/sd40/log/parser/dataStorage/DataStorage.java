@@ -1,14 +1,10 @@
-package ru.naumen.sd40.log.parser;
+package ru.naumen.sd40.log.parser.dataStorage;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
 import ru.naumen.DBConnector;
 import ru.naumen.sd40.log.parser.dataSet.DataSet;
 import ru.naumen.sd40.log.parser.dataSetFactory.DataSetFactory;
 import ru.naumen.sd40.log.parser.exceptions.AlreadyProcessedKeyException;
 
-@Component
 public class DataStorage<TDataSet extends DataSet>
 {
     private TDataSet dataSet = null;
@@ -16,8 +12,6 @@ public class DataStorage<TDataSet extends DataSet>
     private DataSetFactory<TDataSet> factory;
     private long currentKey = -1;
 
-    @Autowired
-    @Lazy
     public DataStorage(DBConnector<TDataSet> dbConnector, DataSetFactory<TDataSet> factory)
     {
         this.dbConnector = dbConnector;

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.naumen.sd40.log.parser.dataSet.DataSet;
+import ru.naumen.sd40.log.parser.dataStorage.DataStorage;
 import ru.naumen.sd40.log.parser.exceptions.AlreadyProcessedKeyException;
 import ru.naumen.sd40.log.parser.populator.DataSetPopulator;
 import ru.naumen.sd40.log.parser.timeParser.GCTimeParser;

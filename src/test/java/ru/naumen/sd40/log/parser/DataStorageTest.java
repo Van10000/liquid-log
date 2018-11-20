@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import ru.naumen.DBConnector;
 import ru.naumen.sd40.log.parser.dataSet.SDNGDataSet;
 import ru.naumen.sd40.log.parser.dataSetFactory.SDNGDataSetFactory;
+import ru.naumen.sd40.log.parser.dataStorage.DataStorage;
 import ru.naumen.sd40.log.parser.exceptions.AlreadyProcessedKeyException;
 
 import static org.mockito.Mockito.*;

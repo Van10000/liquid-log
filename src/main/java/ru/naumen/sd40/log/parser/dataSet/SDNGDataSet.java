@@ -8,6 +8,12 @@ public class SDNGDataSet implements DataSet
     private ActionDoneData actionsDone;
     private ErrorData errors;
 
+    public SDNGDataSet()
+    {
+        actionsDone = new ActionDoneData();
+        errors = new ErrorData();
+    }
+
     public ActionDoneData getActionsDone()
     {
         return actionsDone;
