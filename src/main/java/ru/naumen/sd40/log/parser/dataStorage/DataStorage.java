@@ -18,11 +18,6 @@ public class DataStorage<TDataSet extends DataSet>
         this.factory = factory;
     }
 
-    public void initConnector(String dbName, boolean traceResult)
-    {
-        dbConnector.init(dbName, traceResult);
-    }
-
     public TDataSet get(long key) throws AlreadyProcessedKeyException
     {
         if (key == currentKey)

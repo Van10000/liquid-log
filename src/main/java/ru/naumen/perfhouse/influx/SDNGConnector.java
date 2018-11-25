@@ -1,12 +1,14 @@
 package ru.naumen.perfhouse.influx;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.naumen.sd40.log.parser.data.ActionDoneData;
 import ru.naumen.sd40.log.parser.data.ErrorData;
 import ru.naumen.sd40.log.parser.dataSet.SDNGDataSet;
 
 @Component
+@Scope("request")
 public class SDNGConnector extends BaseConnector<SDNGDataSet>
 {
     @Autowired

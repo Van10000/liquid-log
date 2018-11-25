@@ -1,6 +1,7 @@
 package ru.naumen.sd40.log.parser.dataStorage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import ru.naumen.DBConnector;
 import ru.naumen.sd40.log.parser.dataSet.SDNGDataSet;
@@ -10,6 +11,7 @@ import ru.naumen.sd40.log.parser.dataSetFactory.DataSetFactory;
 public class SDNGDataStorage extends DataStorage<SDNGDataSet>
 {
     @Autowired
+    @Lazy
     public SDNGDataStorage(DBConnector<SDNGDataSet> dbConnector, DataSetFactory<SDNGDataSet> factory)
     {
         super(dbConnector, factory);

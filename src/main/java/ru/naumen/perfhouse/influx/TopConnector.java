@@ -1,11 +1,13 @@
 package ru.naumen.perfhouse.influx;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.naumen.sd40.log.parser.data.TopData;
 import ru.naumen.sd40.log.parser.dataSet.TopDataSet;
 
 @Component
+@Scope("request")
 public class TopConnector extends BaseConnector<TopDataSet>
 {
     @Autowired
