@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import ru.naumen.sd40.log.parser.dataSet.DataSet;
 import ru.naumen.sd40.log.parser.dataStorage.DataStorage;
@@ -26,7 +27,8 @@ import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
  * Created by doki on 22.10.16.
  */
 
-@Component
+@Component("logParser")
+@Lazy
 public class LogParser<TDataSet extends DataSet>
 {
     public static final long TIME_ALIGNMENT = 5 * 60 * 1000;

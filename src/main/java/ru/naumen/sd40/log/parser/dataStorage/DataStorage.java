@@ -1,10 +1,14 @@
 package ru.naumen.sd40.log.parser.dataStorage;
 
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 import ru.naumen.DBConnector;
 import ru.naumen.sd40.log.parser.dataSet.DataSet;
 import ru.naumen.sd40.log.parser.dataSetFactory.DataSetFactory;
 import ru.naumen.sd40.log.parser.exceptions.AlreadyProcessedKeyException;
 
+@Component("dataStorage")
+@Lazy
 public class DataStorage<TDataSet extends DataSet>
 {
     private TDataSet dataSet = null;

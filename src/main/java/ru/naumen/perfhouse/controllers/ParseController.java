@@ -6,6 +6,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ru.naumen.infrastructure.TypesHelper;
 import ru.naumen.sd40.log.parseRunner.ParseRunner;
 import ru.naumen.sd40.log.parser.LogFormatException;
 import ru.naumen.sd40.log.parser.dataSet.GCDataSet;
@@ -36,8 +37,7 @@ public class ParseController
 
     private ParseRunner<?> getParseRunner(String parseMode)
     {
-        ResolvableType type = ResolvableType.forClassWithGenerics(ParseRunner.class, dataSetTypes.get(parseMode));
-        return (ParseRunner<?>) appContext.getBean(appContext.getBeanNamesForType(type)[0]);
+        return (ParseRunner<?>)appContext.getBean(parseMode + "ParseRunner");
     }
 
     @RequestMapping(path = "/parse", method = RequestMethod.POST)

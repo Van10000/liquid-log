@@ -1,5 +1,7 @@
 package ru.naumen.sd40.log.parseRunner;
 
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 import ru.naumen.DBConnector;
 import ru.naumen.sd40.log.parser.dataStorage.DataStorage;
 import ru.naumen.sd40.log.parser.LogFormatException;
@@ -9,6 +11,8 @@ import ru.naumen.sd40.log.parser.dataSet.DataSet;
 import java.io.IOException;
 import java.text.ParseException;
 
+@Component("parseRunner")
+@Lazy
 public class ParseRunner<TDataSet extends DataSet>
 {
     private final DataStorage<TDataSet> dataStorage;
