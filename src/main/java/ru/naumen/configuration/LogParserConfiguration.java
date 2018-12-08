@@ -25,7 +25,7 @@ public class LogParserConfiguration
 
     public <TDataSet extends DataSet> LogParser<TDataSet> getParseRunner(Class dataSetClass)
     {
-        return (LogParser<TDataSet>) appContext.getBean("logParser", appContext.getAutowireCapableBeanFactory());
+        return (LogParser<TDataSet>) appContext.getBean("logParser");
     }
 
     @Bean("sdngLogParser")
