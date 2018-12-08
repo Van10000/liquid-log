@@ -1,8 +1,8 @@
 package ru.naumen;
 
-import ru.naumen.sd40.log.parser.dataParser.DataSet;
-
-public interface DBConnector
+public interface DBConnector<TDataSet>
 {
-    void store(long key, DataSet dataSet);
+    void store(long key, TDataSet dataSet);
+
+    void init(String dbName, boolean traceResult);
 }
