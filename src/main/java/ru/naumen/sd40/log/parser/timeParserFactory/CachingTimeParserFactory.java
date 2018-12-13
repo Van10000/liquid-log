@@ -4,14 +4,13 @@ import ru.naumen.sd40.log.parser.timeParser.TimeParser;
 
 public abstract class CachingTimeParserFactory implements TimeParserFactory
 {
-    TimeParser cached = null;
+    private TimeParser cached = null;
 
     @Override
-    public TimeParser create(String timeZone, String log)
+    public synchronized TimeParser create(String timeZone, String log)
     {
         if (cached != null)
             return cached;
-
         cached = createAndCache(timeZone, log);
         return cached;
     }
