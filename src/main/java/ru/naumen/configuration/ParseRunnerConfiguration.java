@@ -36,7 +36,8 @@ public class ParseRunnerConfiguration
         Object[] dependencies = {
                 appContext.getBean(parseMode + "Storage"),
                 appContext.getBean(parseMode + "LogParser"),
-                baseConnector
+                baseConnector,
+                appContext.getAutowireCapableBeanFactory()
         };
 
         return (ParseRunner<TDataSet>) appContext.getBean("parseRunner", dependencies);

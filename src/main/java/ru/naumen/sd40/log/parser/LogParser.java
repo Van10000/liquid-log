@@ -20,6 +20,7 @@ import ru.naumen.sd40.log.parser.timeParser.GCTimeParser;
 import ru.naumen.sd40.log.parser.timeParser.TimeParser;
 import ru.naumen.sd40.log.parser.timeParser.SDNGTimeParser;
 import ru.naumen.sd40.log.parser.timeParser.TopTimeParser;
+import ru.naumen.sd40.log.parser.timeParserFactory.TimeParserFactory;
 
 import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
 
@@ -34,29 +35,12 @@ public class LogParser<TDataSet extends DataSet>
     public static final long TIME_ALIGNMENT = 5 * 60 * 1000;
     public static final int READER_BUFFER_SIZE = 32 * 1024 * 1024;
 
-    private final BeanFactory beanFactory;
-
-    @Autowired
-    public LogParser(BeanFactory beanFactory) {
-        this.beanFactory = beanFactory;
-    }
-
-    private static HashMap<String, Supplier<TimeParser>> registerTimeParsers(String timeZone, String log)
-    {
-        HashMap<String, Supplier<TimeParser>> timeParsers = new HashMap<>();
-        boolean noTimezone = timeZone == null || timeZone.length() == 0;
-        timeParsers.put("sdng", () -> noTimezone ? new SDNGTimeParser() : new SDNGTimeParser(timeZone));
-        timeParsers.put("gc", () -> noTimezone ? new GCTimeParser() : new GCTimeParser(timeZone));
-        timeParsers.put("top", () -> new TopTimeParser(log));
-        return timeParsers;
-    }
-
-    public void parseAndUpload(String logPath, String timezone, String mode, DataStorage<TDataSet> storage)
+    public void parseAndUpload(String logPath, String timezone,
+                               DataStorage<TDataSet> storage, TimeParserFactory timeParserFactory,
+                               DataSetPopulator<TDataSet> populator)
             throws IOException, ParseException, LogFormatException
     {
-        TimeParser timeParser = registerTimeParsers(timezone, logPath).get(mode).get();
-        DataSetPopulator<TDataSet> populator = (DataSetPopulator<TDataSet>)
-                beanFactory.getBean(mode + "Populator");
+        TimeParser timeParser = timeParserFactory.create(timezone, logPath);
 
         try (BufferedReader br = new BufferedReader(new FileReader(logPath), READER_BUFFER_SIZE))
         {
