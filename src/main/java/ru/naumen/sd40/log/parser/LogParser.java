@@ -4,22 +4,15 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.function.Supplier;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import ru.naumen.sd40.log.parser.dataSet.DataSet;
 import ru.naumen.sd40.log.parser.dataStorage.DataStorage;
 import ru.naumen.sd40.log.parser.exceptions.AlreadyProcessedKeyException;
 import ru.naumen.sd40.log.parser.populator.DataSetPopulator;
-import ru.naumen.sd40.log.parser.timeParser.GCTimeParser;
 import ru.naumen.sd40.log.parser.timeParser.TimeParser;
-import ru.naumen.sd40.log.parser.timeParser.SDNGTimeParser;
-import ru.naumen.sd40.log.parser.timeParser.TopTimeParser;
 import ru.naumen.sd40.log.parser.timeParserFactory.TimeParserFactory;
 
 import static ru.naumen.sd40.log.parser.NumberUtils.floorToClosestMultiple;
@@ -40,6 +33,7 @@ public class LogParser<TDataSet extends DataSet>
                                DataSetPopulator<TDataSet> populator)
             throws IOException, ParseException, LogFormatException
     {
+
         TimeParser timeParser = timeParserFactory.create(timezone, logPath);
 
         try (BufferedReader br = new BufferedReader(new FileReader(logPath), READER_BUFFER_SIZE))

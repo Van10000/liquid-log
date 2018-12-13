@@ -6,12 +6,9 @@ import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.naumen.infrastructure.TypesHelper;
+import ru.naumen.infrastructure.ParseModeLocator;
 import ru.naumen.sd40.log.parseRunner.ParseRunner;
 import ru.naumen.sd40.log.parser.LogFormatException;
-import ru.naumen.sd40.log.parser.dataSet.GCDataSet;
-import ru.naumen.sd40.log.parser.dataSet.SDNGDataSet;
-import ru.naumen.sd40.log.parser.dataSet.TopDataSet;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -21,23 +18,18 @@ import java.util.HashMap;
 public class ParseController
 {
     private final ApplicationContext appContext;
-    private final HashMap<String, Class> dataSetTypes = new HashMap<String, Class>(){
-        {
-            put("sdng", SDNGDataSet.class);
-            put("top", TopDataSet.class);
-            put("gc", GCDataSet.class);
-        }
-    };
+    private final HashMap<String, Class> dataSetTypes;
 
     @Autowired
-    public ParseController(ApplicationContext appContext)
+    public ParseController(ParseModeLocator parseModeLocator, ApplicationContext appContext)
     {
         this.appContext = appContext;
+        dataSetTypes = parseModeLocator.getDataSetTypes();
     }
 
     private ParseRunner<?> getParseRunner(String parseMode)
     {
-        return (ParseRunner<?>)appContext.getBean(parseMode + "ParseRunner");
+        return (ParseRunner<?>) appContext.getBean(parseMode + "ParseRunner");
     }
 
     @RequestMapping(path = "/parse", method = RequestMethod.POST)

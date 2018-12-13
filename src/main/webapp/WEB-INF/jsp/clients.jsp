@@ -61,9 +61,11 @@
                 <td><input type="text" class="form-control" name="Timezone" placeholder="Asia/Yekaterinburg"></td>
             </tr>
         </table>
-        <input type="radio" class="form-check-input" name="ParseMode" value="sdng" checked>Sdng<br>
-        <input type="radio" class="form-check-input" name="ParseMode" value="top">Top<br>
-        <input type="radio" class="form-check-input" name="ParseMode" value="gc">Gc<br>
+        <%
+        String[] modes = ((String[])request.getAttribute("parseModes"));
+        for (String mode : modes) { %>
+            <input type="radio" class="form-check-input" name="ParseMode" value="<%=mode%>" <%=(mode == modes[0] ? "checked" : "")%> ><%=mode%><br>
+        <% } %>
         <input type="checkbox" class="form-check-input" value="true" name="TraceResult" checked>Trace result<br>
         <button type="submit" class="btn btn-success">Start parsing</button>
     </form>

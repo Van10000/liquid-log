@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import ru.naumen.infrastructure.ParseModeLocator;
 import ru.naumen.perfhouse.influx.InfluxDAO;
 
 /**
@@ -30,11 +31,13 @@ public class ClientsController
 {
     private Logger LOG = LoggerFactory.getLogger(ClientsController.class);
     private InfluxDAO influxDAO;
+    private final ParseModeLocator parseModeLocator;
 
     @Inject
-    public ClientsController(InfluxDAO influxDAO)
+    public ClientsController(ParseModeLocator parseModeLocator, InfluxDAO influxDAO)
     {
         this.influxDAO = influxDAO;
+        this.parseModeLocator = parseModeLocator;
     }
 
     @RequestMapping(path = "/")
@@ -69,6 +72,7 @@ public class ClientsController
         model.put("last864links", clientLast864Links);
         model.put("last2016links", clientLast2016Links);
         model.put("prevMonthLinks", clientPreviousMonthLinks);
+        model.put("parseModes", parseModeLocator.getParseModes());
 
         return new ModelAndView("clients", model, HttpStatus.OK);
     }
