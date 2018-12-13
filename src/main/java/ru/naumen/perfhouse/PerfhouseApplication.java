@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import ru.naumen.ApplicationContextProvider.ApplicationContextProvider;
+import ru.naumen.infrastructure.ApplicationContextProvider;
 
 @SpringBootApplication(scanBasePackages = { "ru.naumen" })
 public class PerfhouseApplication extends SpringBootServletInitializer
